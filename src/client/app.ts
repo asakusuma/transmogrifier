@@ -4,12 +4,13 @@ document.addEventListener('click', (e) => {
     const href = el.getAttribute('href');
     if (href) {
       e.preventDefault();
+      window.history.pushState(null, null, href);
       navigateTo(href);
     }
   }
 });
 
-window.addEventListener('popstate', (e) => {
+window.addEventListener('popstate', (e: PopStateEvent) => {
   navigateTo(window.location.pathname);
 });
 
@@ -26,7 +27,6 @@ function hrefToName(href: string): RouteName {
 
 function navigateTo(href: string) {
   console.log('Navigate', href);
-  window.history.pushState(null, null, href);
   const appEl = document.getElementById('app');
   appEl.textContent = hrefToName(href);
 }

@@ -1,0 +1,12 @@
+{
+  "name": "transmogrifier",
+  "version": "0.1.0",
+  "description": "Stuff",
+  "main": "index.js",
+  "repository": "https://github.com/asakusuma/transmogrifier.git",
+  "author": "asakusuma",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.15.4"
+  }
+}

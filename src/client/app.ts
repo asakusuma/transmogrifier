@@ -9,6 +9,10 @@ document.addEventListener('click', (e) => {
   }
 });
 
+window.addEventListener('popstate', (e) => {
+  navigateTo(window.location.pathname);
+});
+
 type RouteName = 'home' | 'foo' | '404';
 
 function hrefToName(href: string): RouteName {

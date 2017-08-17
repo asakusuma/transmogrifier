@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
+        "module": "amd",
         "noImplicitAny": true,
         "removeComments": true,
         "preserveConstEnums": true,
@@ -8,9 +8,9 @@
         "noImplicitThis": true,
         "noUnusedLocals": true,
         "moduleResolution": "node",
-        "outDir": "dist"
+        "outFile": "dist/client/index.js"
     },
     "files": [
-        "src/server.ts"
+        "src/client/app.ts"
     ]
 }

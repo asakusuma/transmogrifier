@@ -1,9 +1,26 @@
 import { hrefToName, isAdjunct } from './../shared/shared';
 
+interface TransmogrifierPortal extends HTMLIFrameElement {
+  contentWindow: TransmogrifierWindow;
+}
+
+interface TransmogrifierWindow extends Window {
+  parent: TransmogrifierWindow;
+  portal: TransmogrifierPortal;
+  IS_ACTIVE: boolean;
+  routeTo: (href: string) => void;
+  exitPortal: (href: string) => void;
+  navigateTo: (href: string) => void;
+  updateUrl: (href: string) => void;
+  isParentActive: () => boolean;
+}
+
 declare var IS_ADJUNCT: boolean;
-const portal = document.getElementById('transmogrifier-portal') as HTMLIFrameElement;
-(window as any).portal = portal;
-(window as any).IS_ACTIVE = true;
+declare var window: TransmogrifierWindow;
+
+const portal = document.getElementById('transmogrifier-portal') as TransmogrifierPortal;
+window.portal = portal;
+window.IS_ACTIVE = true;
 function isChild(): boolean {
   return window.parent !== window;
 }
@@ -46,7 +63,7 @@ function navigateTo(href: string) {
   // console.log('Navigate', href);
   if (shouldTransmogrify(href)) {
     if (isChild()) {
-      (window.parent as any).exitPortal(href);
+      window.parent.exitPortal(href);
     } else {
       enterPortal(href);
     }
@@ -57,7 +74,7 @@ function navigateTo(href: string) {
 
 function routeTo(href: string) {
   if (isInactiveParent()) {
-    (portal.contentWindow as any).routeTo(href);
+    portal.contentWindow.routeTo(href);
   } else {
     const appEl = document.getElementById('app');
     appEl.textContent = hrefToName(href);
@@ -65,13 +82,13 @@ function routeTo(href: string) {
 }
 
 function enterPortal(href: string) {
-  (window as any).IS_ACTIVE = false;
-  (portal.contentWindow as any).routeTo(href);
+  window.IS_ACTIVE = false;
+  portal.contentWindow.routeTo(href);
   document.getElementById('transmogrifier-portal').style.display = 'block';
 }
 
 function exitPortal(href: string) {
-  (window as any).IS_ACTIVE = true;
+  window.IS_ACTIVE = true;
   routeTo(href);
   document.getElementById('transmogrifier-portal').style.display = 'none';
 }
@@ -84,7 +101,7 @@ interface StateInterface {
 
 function updateUrl(href: string) {
   if (isChild()) {
-    (window.parent as any).updateUrl(href);
+    window.parent.updateUrl(href);
   } else {
     const state: StateInterface = {
       path: href,
@@ -97,11 +114,11 @@ function updateUrl(href: string) {
 }
 
 function isParentActive(): boolean {
-  return isChild() ? (window.parent as any).isParentActive() : (window as any).IS_ACTIVE;
+  return isChild() ? window.parent.isParentActive() : window.IS_ACTIVE;
 }
 
-(window as any).routeTo = routeTo;
-(window as any).exitPortal = exitPortal;
-(window as any).navigateTo = navigateTo;
-(window as any).updateUrl = updateUrl;
-(window as any).isParentActive = isParentActive;
+window.routeTo = routeTo;
+window.exitPortal = exitPortal;
+window.navigateTo = navigateTo;
+window.updateUrl = updateUrl;
+window.isParentActive = isParentActive;

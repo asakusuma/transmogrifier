@@ -33,9 +33,9 @@ document.addEventListener('click', (e) => {
 window.addEventListener('popstate', (e: PopStateEvent) => {
   const href = window.location.pathname;
   //const state = e.state as StateInterface;
-  if (!isAdjunct(href) && !isParentActive()) {
+  if (!shouldTransmogrify(href) && !isParentActive()) {
     exitPortal(href);
-  } else if (isAdjunct(href) && isParentActive()) {
+  } else if (shouldTransmogrify(href) && isParentActive()) {
     enterPortal(href);
   } else {
     routeTo(href);

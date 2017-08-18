@@ -6,10 +6,12 @@ const app = express();
 //app.use('/client', express.static('./dist/client'));
 app.use('/client/almond.js', express.static('./lib/almond.js'));
 
-function sendAppJs(res: express.Response) {
+function sendAppJs(res: express.Response, delay: number = 0) {
   const js = readFileSync('./dist/client/index.js');
   res.set('Content-Type', 'text/javascript');
-  res.send(js);
+  setTimeout(() => {
+    res.send(js);
+  }, delay);
 }
 
 function renderPage(name: string, color: string, isAdjunctString: string, appJs: string, childAppName?: string) {
@@ -94,7 +96,7 @@ app.get('/incumbent.js', function(req, res) {
   sendAppJs(res);
 });
 app.get('/adjunct.js', function(req, res) {
-  sendAppJs(res);
+  sendAppJs(res, 2000);
 });
 
 type AppName = 'adjunct' | 'incumbent';

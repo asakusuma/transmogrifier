@@ -41,9 +41,13 @@ function renderPage(name: string, color: string, isAdjunctString: string, appJs:
       <body>
         <ul>
           <li><a href="/">home</a></li>
-          <li><a href="/foo">foo</a></li>
-          <li><a href="/bar">bar</a></li>
-          <li><a href="/baz">baz</a></li>
+          <li><a href="/bulls">bulls</a></li>
+          <li><a href="/warriors">warriors</a></li>
+          <li><a href="/wizards">wizards</a></li>
+          <li><a href="/cavs">cavs</a></li>
+          <li><a href="/nets">nets</a></li>
+          <li><a href="/pistons">pistons</a></li>
+          <li><a href="/knicks">knicks</a></li>
         </ul>
         <div id="app">${name}</div>
         ${iframe}
@@ -86,7 +90,7 @@ function generateHandlers(routes: string[]): Handler[] {
   });
 }
 
-const handlers = generateHandlers(['home', 'foo', 'bar', 'baz']);
+const handlers = generateHandlers(['home', 'bulls', 'warriors', 'wizards', 'cavs', 'nets', 'pistons', 'knicks']);
 
 app.get('/sw.js', function(req, res) {
   res.status(404).send();
@@ -96,7 +100,7 @@ app.get('/incumbent.js', function(req, res) {
   sendAppJs(res);
 });
 app.get('/adjunct.js', function(req, res) {
-  sendAppJs(res, 2000);
+  sendAppJs(res, 10);
 });
 
 type AppName = 'adjunct' | 'incumbent';

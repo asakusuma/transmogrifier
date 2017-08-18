@@ -3,23 +3,17 @@ import { TransmogrifierConfig } from './config';
 const GLOBAL_CONFIG: TransmogrifierConfig = {
   adjunct: {
     name: 'hobbes',
-    paths: new RegExp('^\/?bar')
+    paths: new RegExp('^\/?(wizards|nets|cavs)')
   }
 };
 
-export type RouteName = 'home' | 'foo' | 'bar' | 'baz' | '404';
+export type RouteName = string;
 
 export function hrefToName(href: string): RouteName {
   if (href === '/') {
     return 'home';
-  } else if (href === '/foo') {
-    return 'foo';
-  } else if (href === '/bar') {
-    return 'bar';
-  } else if (href === '/baz') {
-    return 'baz';
   }
-  return '404';
+  return href.substr(1, href.length);
 }
 
 // Returns falsy if no adjuct match for path

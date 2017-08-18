@@ -1,11 +1,18 @@
 import * as express from 'express';
+import { readFileSync } from 'fs';
 import { isAdjunct } from './shared/shared';
 
 const app = express();
-app.use('/client', express.static('./dist/client'));
+//app.use('/client', express.static('./dist/client'));
 app.use('/client/almond.js', express.static('./lib/almond.js'));
 
-function renderPage(name: string, color: string, isAdjunctString: string, childAppName?: string) {
+function sendAppJs(res: express.Response) {
+  const js = readFileSync('./dist/client/index.js');
+  res.set('Content-Type', 'text/javascript');
+  res.send(js);
+}
+
+function renderPage(name: string, color: string, isAdjunctString: string, appJs: string, childAppName?: string) {
   const iframe = childAppName ? `<iframe id="transmogrifier-portal" frameborder="0" seamless="true" style="display:none;" scrolling="no" src="http://localhost:3000/?appName=${childAppName}"></iframe>` : '';
   return `<html>
       <head>
@@ -38,7 +45,7 @@ function renderPage(name: string, color: string, isAdjunctString: string, childA
         </ul>
         <div id="app">${name}</div>
         ${iframe}
-        <script type="text/javascript" src="client/index.js"></script>
+        <script type="text/javascript" src="${appJs}"></script>
         <script>
           require('client/app');
         </script>
@@ -49,12 +56,13 @@ function renderPage(name: string, color: string, isAdjunctString: string, childA
 function pageHandler(name: string, isAdj: boolean = false) {
   return function serveApp(req: express.Request, res: express.Response, appName?: AppName) {
     const isAdjunct = isAdj || (appName && appName === 'adjunct');
+    const appJs = isAdjunct ? 'adjunct.js' : 'incumbent.js';
     const isAdjunctString = isAdjunct  ? 'true' : 'false';
     const color = isAdjunct ? 'orange' : 'blue';
     const childAppName: AppName = appName ? null : (!isAdjunct ? 'adjunct' : 'incumbent');
 
     res.set('Content-Type', 'text/html');
-    res.send(renderPage(name, color, isAdjunctString, childAppName));
+    res.send(renderPage(name, color, isAdjunctString, appJs, childAppName));
   }
 }
 
@@ -80,6 +88,13 @@ const handlers = generateHandlers(['home', 'foo', 'bar', 'baz']);
 
 app.get('/sw.js', function(req, res) {
   res.status(404).send();
+});
+
+app.get('/incumbent.js', function(req, res) {
+  sendAppJs(res);
+});
+app.get('/adjunct.js', function(req, res) {
+  sendAppJs(res);
 });
 
 type AppName = 'adjunct' | 'incumbent';

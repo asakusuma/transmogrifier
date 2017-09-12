@@ -1,4 +1,4 @@
-import { hrefToName, isAdjunct } from './../shared/shared';
+import { hrefToName } from './../shared/shared';
 
 export default function boot() {
   document.addEventListener('click', (e) => {
@@ -11,6 +11,11 @@ export default function boot() {
         routeTo(href);
       }
     }
+  });
+
+  window.addEventListener('popstate', (e: PopStateEvent) => {
+    const href = window.location.pathname;
+    routeTo(href);
   });
   
   function routeTo(href: string) {

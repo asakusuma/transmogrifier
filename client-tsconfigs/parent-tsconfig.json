@@ -8,9 +8,9 @@
         "noImplicitThis": true,
         "noUnusedLocals": true,
         "moduleResolution": "node",
-        "outFile": "dist/client/index.js"
+        "outFile": "../dist/client/parent.js"
     },
     "files": [
-        "src/client/app.ts"
+        "../src/client/parent.ts"
     ]
 }

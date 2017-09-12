@@ -6,15 +6,15 @@ const app = express();
 //app.use('/client', express.static('./dist/client'));
 app.use('/client/almond.js', express.static('./lib/almond.js'));
 
-function sendAppJs(res: express.Response, delay: number = 0) {
-  const js = readFileSync('./dist/client/index.js');
+function sendAppJs(res: express.Response, name: string, delay: number = 0) {
+  const js = readFileSync(`./dist/client/${name}.js`);
   res.set('Content-Type', 'text/javascript');
   setTimeout(() => {
     res.send(js);
   }, delay);
 }
 
-function renderPage(name: string, color: string, isAdjunctString: string, appJs: string, childAppName?: string) {
+function renderPage(name: string, color: string, isAdjunctString: string, appJs: string, moduleName: string, childAppName?: string) {
   const iframe = childAppName ? `<iframe id="transmogrifier-portal" frameborder="0" seamless="true" style="display:none;" scrolling="no" src="http://localhost:3000/?appName=${childAppName}"></iframe>` : '';
   return `<html>
       <head>
@@ -33,9 +33,6 @@ function renderPage(name: string, color: string, isAdjunctString: string, appJs:
             height: 100%;
           }
         </style>
-        <script>
-          window.IS_ADJUNCT = ${isAdjunctString};
-        </script>
         <script type="text/javascript" src="client/almond.js"></script>
       </head>
       <body>
@@ -53,7 +50,8 @@ function renderPage(name: string, color: string, isAdjunctString: string, appJs:
         ${iframe}
         <script type="text/javascript" src="${appJs}"></script>
         <script>
-          require('client/app');
+          var boot = require('${moduleName}');
+          boot['default'](window, document.getElementById('transmogrifier-portal'), ${isAdjunctString});
         </script>
       </body>
     </html>`;
@@ -62,13 +60,14 @@ function renderPage(name: string, color: string, isAdjunctString: string, appJs:
 function pageHandler(name: string, isAdj: boolean = false) {
   return function serveApp(req: express.Request, res: express.Response, appName?: AppName) {
     const isAdjunct = isAdj || (appName && appName === 'adjunct');
-    const appJs = isAdjunct ? 'adjunct.js' : 'incumbent.js';
     const isAdjunctString = isAdjunct  ? 'true' : 'false';
     const color = isAdjunct ? 'orange' : 'blue';
     const childAppName: AppName = appName ? null : (!isAdjunct ? 'adjunct' : 'incumbent');
+    const appJs = childAppName ? 'parent.js' : 'child.js';
+    const moduleName = childAppName ? 'client/parent' : 'client/child';
 
     res.set('Content-Type', 'text/html');
-    res.send(renderPage(name, color, isAdjunctString, appJs, childAppName));
+    res.send(renderPage(name, color, isAdjunctString, appJs, moduleName, childAppName));
   }
 }
 
@@ -96,11 +95,11 @@ app.get('/sw.js', function(req, res) {
   res.status(404).send();
 });
 
-app.get('/incumbent.js', function(req, res) {
-  sendAppJs(res);
+app.get('/parent.js', function(req, res) {
+  sendAppJs(res, 'parent');
 });
-app.get('/adjunct.js', function(req, res) {
-  sendAppJs(res, 10);
+app.get('/child.js', function(req, res) {
+  sendAppJs(res, 'child', 10);
 });
 
 type AppName = 'adjunct' | 'incumbent';

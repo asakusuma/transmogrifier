@@ -25,4 +25,10 @@ export function isAdjunct(path: string, config?: TransmogrifierConfig): boolean 
   }
 }
 
+export function generateIsExternalPath(appIsAdjunct: boolean) {
+  return function IsExternalPath(path: string): boolean {
+    return Boolean(Number(isAdjunct(path)) ^ Number(appIsAdjunct));
+  }
+}
+
 export const config = GLOBAL_CONFIG;

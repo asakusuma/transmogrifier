@@ -10,5 +10,6 @@ export interface TransmogrifierWindow extends Window {
   exitPortal: (href: string) => void;
   navigateTo: (href: string) => void;
   updateUrl: (href: string) => void;
+  updateChildUrl: (href: string) => void;
   isParentActive: () => boolean;
 }

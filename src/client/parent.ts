@@ -47,6 +47,13 @@ export default function bootParent(w: TransmogrifierWindow, p: TransmogrifierPor
     routeTo(path);
   }
   w.updateUrl = replaceState;
+
+  w.updateChildUrl = function(path: string) {
+    p.style.display = 'block';
+    isActive = false;
+    replaceState(path);
+  }
+
   function replaceState(path: string) {
     window.history.replaceState(null, null, path);
   }

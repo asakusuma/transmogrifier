@@ -8,10 +8,10 @@ import {
 
 import bootApp from './app';
 
-function routeToParent(w: TransmogrifierWindow, path: string) {
+function routeToParent(w: TransmogrifierWindow, path?: string) {
   const p = w.frameElement as HTMLFrameElement;
   p.style.display = 'none';
-  w.parent.transmogrify(path);
+  w.parent.transmogrify(path, window.location.pathname);
 }
 
 export default function bootChild(w: TransmogrifierWindow, p: TransmogrifierPortal, isAdjunct: boolean) {
@@ -25,11 +25,26 @@ export default function bootChild(w: TransmogrifierWindow, p: TransmogrifierPort
     }
   }
 
-  const {
-    routeTo
-  } = bootApp(w, isParentPath, onRoute, onRoute);
+  function onPop(path: string, state: any) {
+    if (isParentPath(path)) {
+      routeToParent(w, state ? path : null);
+    } else {
+      w.parent.updateChildUrl(path);
+    }
+  }
 
-  w.transmogrify = function(path: string) {
+  const {
+    routeTo,
+    updateUrl
+  } = bootApp(w, isParentPath, onRoute, onPop);
+
+  w.transmogrify = function(path: string, previousPath: string) {
+    console.log('child replace', previousPath);
+    window.history.replaceState({
+      previousPath
+    }, null, previousPath);
     routeTo(path);
+    updateUrl(path, previousPath);
+    w.parent.updateChildUrl(path);
   }
 }

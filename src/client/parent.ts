@@ -14,7 +14,7 @@ export default function bootParent(w: TransmogrifierWindow, p: TransmogrifierPor
   let isActive = true;
   function routeToChild(p: TransmogrifierPortal, path: string) {
     isActive = false;
-    p.contentWindow.transmogrify(path);
+    p.contentWindow.transmogrify(path, window.location.pathname);
     p.style.display = 'block';
   }
 
@@ -25,6 +25,7 @@ export default function bootParent(w: TransmogrifierWindow, p: TransmogrifierPor
     if (isChildPath(path)) {
       //console.log('Should route to child', path);
       routeToChild(p, path);
+      return true;
     } else {
       //console.log('from child', path);
       isActive = true;
@@ -42,9 +43,15 @@ export default function bootParent(w: TransmogrifierWindow, p: TransmogrifierPor
     updateUrl
   } = bootApp(w, isChildPath, onRoute, onPop);
 
-  w.transmogrify = function(path: string) {
-    replaceState(path);
-    routeTo(path);
+  w.transmogrify = function(path?: string) {
+    if (path) {
+      replaceState(path);
+      routeTo(path);
+    } else {
+      setTimeout(() => {
+        routeTo(window.location.pathname);
+      }, 100);
+    }
   }
   w.updateUrl = replaceState;
 
@@ -55,6 +62,7 @@ export default function bootParent(w: TransmogrifierWindow, p: TransmogrifierPor
   }
 
   function replaceState(path: string) {
+    console.log('parent replace', path);
     window.history.replaceState(null, null, path);
   }
 }

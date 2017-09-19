@@ -1,15 +1,22 @@
 import { hrefToName } from './../shared/shared';
 import { TransmogrifierWindow } from '../shared/interfaces';
 
-export type RouteHook = (path: string) => void;
+export type RouteHook = (path: string) => void | boolean;
 export type HandleHook = (path: string) => boolean;
+export type PopHook = (path: string, state: StateInterface) => void;
+export type UpdateUrlHook = (path: string, previousPath?: string) => void;
+
+interface StateInterface {
+  path: string;
+  previousPath: string;
+}
 
 export interface AppHooks {
   routeTo: RouteHook;
-  updateUrl: RouteHook;
+  updateUrl: UpdateUrlHook;
 }
 
-export default function boot(w: TransmogrifierWindow, shouldYieldPath: HandleHook, onRoute: RouteHook, onPop: RouteHook): AppHooks {
+export default function boot(w: TransmogrifierWindow, shouldYieldPath: HandleHook, onRoute: RouteHook, onPop: PopHook): AppHooks {
   document.addEventListener('click', (e) => {
     const el: Element = e.target as Element;
     if (el.tagName === 'A') {
@@ -23,7 +30,8 @@ export default function boot(w: TransmogrifierWindow, shouldYieldPath: HandleHoo
 
   window.addEventListener('popstate', (e: PopStateEvent) => {
     const href = window.location.pathname;
-    internalPop(href);
+    console.log('pop', href, e.state);
+    internalPop(href, e.state);
   });
   
   function routeTo(href: string) {
@@ -36,26 +44,22 @@ export default function boot(w: TransmogrifierWindow, shouldYieldPath: HandleHoo
     updateUrl
   };
 
-  function internalPop(path?: string) {
+  function internalPop(path: string, state: StateInterface) {
     routeTo(path);
-    onPop(path);
+    onPop(path, state);
   }
 
   function internalNavigate(path: string) {
-    updateUrl(path);
-    routeTo(path);
-    onRoute(path);
+    if (!onRoute(path)) {
+      updateUrl(path);
+      routeTo(path);
+    }
   }
   
-  interface StateInterface {
-    path: string;
-    previousPath: string;
-  }
-  
-  function updateUrl(href: string) {
+  function updateUrl(href: string, previousPath?: string) {
     const state: StateInterface = {
       path: href,
-      previousPath: window.location.pathname
+      previousPath: previousPath || window.location.pathname
     }
     console.log('push', href);
     window.history.pushState(state, null, href);

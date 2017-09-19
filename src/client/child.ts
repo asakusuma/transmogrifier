@@ -19,7 +19,7 @@ export default function bootChild(w: TransmogrifierWindow, p: TransmogrifierPort
 
   function onRoute(path: string) {
     if (isParentPath(path)) {
-      console.log('Should route to parent', path);
+      //console.log('Should route to parent', path);
       routeToParent(w, path);
     } else {
       w.parent.updateUrl(path);
@@ -27,12 +27,11 @@ export default function bootChild(w: TransmogrifierWindow, p: TransmogrifierPort
   }
 
   function onPop(path: string) {
-    console.log('pop', path);
+    //console.log('pop', path);
   }
 
   const {
-    routeTo,
-    updateUrl
+    routeTo
   } = bootApp(w, isParentPath, onRoute, onPop);
 
   w.transmogrify = function(path: string) {

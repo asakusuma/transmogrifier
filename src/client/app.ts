@@ -23,6 +23,7 @@ export default function boot(w: TransmogrifierWindow, shouldYieldPath: HandleHoo
 
   window.addEventListener('popstate', (e: PopStateEvent) => {
     const href = window.location.pathname;
+    console.log('pop state', href, e.state);
     internalPop(href);
   });
   
@@ -57,7 +58,7 @@ export default function boot(w: TransmogrifierWindow, shouldYieldPath: HandleHoo
       path: href,
       previousPath: window.location.pathname
     }
-    // console.log('push state', href);
+    console.log('push state', href);
     window.history.pushState(state, null, href);
   }
 

@@ -4,8 +4,7 @@ import {
 } from '../shared/interfaces';
 
 import {
-  default as bootApp,
-  AppHooks
+  default as bootApp
 } from './app';
 import { 
   generateIsExternalPath
@@ -19,15 +18,15 @@ export default function bootParent(w: TransmogrifierWindow, p: TransmogrifierPor
     p.style.display = 'block';
   }
 
-  console.log('Parent is adjunct', isAdjunct);
+  //console.log('Parent is adjunct', isAdjunct);
   const isChildPath = generateIsExternalPath(isAdjunct);
 
   function onRoute(path: string) {
     if (isChildPath(path)) {
-      console.log('Should route to child', path);
+      //console.log('Should route to child', path);
       routeToChild(p, path);
     } else {
-      console.log('from child', path);
+      //console.log('from child', path);
       isActive = true;
     }
   }
@@ -44,8 +43,11 @@ export default function bootParent(w: TransmogrifierWindow, p: TransmogrifierPor
   } = bootApp(w, isChildPath, onRoute, onPop);
 
   w.transmogrify = function(path: string) {
-    updateUrl(path);
+    replaceState(path);
     routeTo(path);
   }
-  w.updateUrl = updateUrl;
+  w.updateUrl = replaceState;
+  function replaceState(path: string) {
+    window.history.replaceState(null, null, path);
+  }
 }

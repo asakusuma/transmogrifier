@@ -10,6 +10,8 @@ import {
   generateIsExternalPath
 } from './../shared/shared';
 
+import log from './log';
+
 export default function bootParent(w: TransmogrifierWindow, p: TransmogrifierPortal, isAdjunct: boolean) {
   let isActive = true;
   function routeToChild(p: TransmogrifierPortal, path: string) {
@@ -39,9 +41,8 @@ export default function bootParent(w: TransmogrifierWindow, p: TransmogrifierPor
     }
   }
   const {
-    routeTo,
-    updateUrl
-  } = bootApp(w, isChildPath, onRoute, onPop);
+    routeTo
+  } = bootApp(w, isChildPath, onRoute, onPop, log);
 
   w.transmogrify = function(path?: string) {
     if (path) {

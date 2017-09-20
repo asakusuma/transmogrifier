@@ -6,6 +6,8 @@ import {
   generateIsExternalPath
 } from './../shared/shared';
 
+import log from './log';
+
 import bootApp from './app';
 
 function routeToParent(w: TransmogrifierWindow, path?: string) {
@@ -13,6 +15,7 @@ function routeToParent(w: TransmogrifierWindow, path?: string) {
   p.style.display = 'none';
   w.parent.transmogrify(path, window.location.pathname);
 }
+
 
 export default function bootChild(w: TransmogrifierWindow, p: TransmogrifierPortal, isAdjunct: boolean) {
   const isParentPath = generateIsExternalPath(isAdjunct);
@@ -36,7 +39,7 @@ export default function bootChild(w: TransmogrifierWindow, p: TransmogrifierPort
   const {
     routeTo,
     updateUrl
-  } = bootApp(w, isParentPath, onRoute, onPop);
+  } = bootApp(w, isParentPath, onRoute, onPop, log);
 
   w.transmogrify = function(path: string, previousPath: string) {
     console.log('child replace', previousPath);

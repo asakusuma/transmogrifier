@@ -16,7 +16,7 @@ export interface AppHooks {
   updateUrl: UpdateUrlHook;
 }
 
-export default function boot(w: TransmogrifierWindow, shouldYieldPath: HandleHook, onRoute: RouteHook, onPop: PopHook): AppHooks {
+export default function boot(w: TransmogrifierWindow, shouldYieldPath: HandleHook, onRoute: RouteHook, onPop: PopHook, log: Function): AppHooks {
   document.addEventListener('click', (e) => {
     const el: Element = e.target as Element;
     if (el.tagName === 'A') {
@@ -30,7 +30,7 @@ export default function boot(w: TransmogrifierWindow, shouldYieldPath: HandleHoo
 
   window.addEventListener('popstate', (e: PopStateEvent) => {
     const href = window.location.pathname;
-    console.log('pop', href, e.state);
+    log('pop', href, e.state);
     internalPop(href, e.state);
   });
   
@@ -61,7 +61,7 @@ export default function boot(w: TransmogrifierWindow, shouldYieldPath: HandleHoo
       path: href,
       previousPath: previousPath || window.location.pathname
     }
-    console.log('push', href);
+    log('push', href);
     window.history.pushState(state, null, href);
   }
 

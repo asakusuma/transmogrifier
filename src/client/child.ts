@@ -1,5 +1,5 @@
 import {
-  TransmogrifierWindow,
+  ChildWindow,
   TransmogrifierPortal
 } from '../shared/interfaces';
 import { 
@@ -11,7 +11,7 @@ import log from './log';
 
 import bootApp from './app';
 
-function routeToParent(w: TransmogrifierWindow, path?: string) {
+function routeToParent(w: ChildWindow, path?: string) {
   w.parent.transmogrify(path, window.location.pathname);
   safeTransmogrify(w.parent, path, window.location.pathname) .then(() => {
     const p = w.frameElement as HTMLFrameElement;
@@ -22,7 +22,7 @@ function routeToParent(w: TransmogrifierWindow, path?: string) {
 }
 
 
-export default function bootChild(w: TransmogrifierWindow, p: TransmogrifierPortal, isAdjunct: boolean) {
+export default function bootChild(w: ChildWindow, p: TransmogrifierPortal, isAdjunct: boolean) {
   const isParentPath = generateIsExternalPath(isAdjunct);
 
   function onRoute(path: string) {

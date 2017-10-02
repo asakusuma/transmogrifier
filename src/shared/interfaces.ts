@@ -3,7 +3,13 @@ export interface TransmogrifierPortal extends HTMLIFrameElement {
 }
 
 export interface TransmogrifierWindow extends Window {
-  parent: TransmogrifierWindow;
   transmogrify: (href: string, previousPath: string) => void;
+}
+
+export interface ParentWindow extends TransmogrifierWindow {
   updateChildUrl: (href: string) => void;
+}
+
+export interface ChildWindow extends TransmogrifierWindow {
+  parent: ParentWindow;
 }

@@ -1,5 +1,5 @@
 import {
-  TransmogrifierWindow,
+  ParentWindow,
   TransmogrifierPortal
 } from '../shared/interfaces';
 
@@ -13,7 +13,7 @@ import {
 
 import log from './log';
 
-export default function bootParent(w: TransmogrifierWindow, p: TransmogrifierPortal, isAdjunct: boolean) {
+export default function bootParent(w: ParentWindow, p: TransmogrifierPortal, isAdjunct: boolean) {
   let isActive = true;
   function routeToChild(p: TransmogrifierPortal, path: string) {
     safeTransmogrify(p.contentWindow, path, window.location.pathname).then(() => {

@@ -2,7 +2,6 @@ import { hrefToName } from './../shared/shared';
 import { TransmogrifierWindow } from '../shared/interfaces';
 
 export type RouteHook = (path: string) => void | boolean;
-export type HandleHook = (path: string) => boolean;
 export type PopHook = (path: string, state: StateInterface) => void;
 export type UpdateUrlHook = (path: string, previousPath?: string) => void;
 
@@ -16,7 +15,7 @@ export interface AppHooks {
   updateUrl: UpdateUrlHook;
 }
 
-export default function boot(w: TransmogrifierWindow, shouldYieldPath: HandleHook, onRoute: RouteHook, onPop: PopHook, log: Function): AppHooks {
+export default function boot(w: TransmogrifierWindow, onRoute: RouteHook, onPop: PopHook, log: Function): AppHooks {
   document.addEventListener('click', (e) => {
     const el: Element = e.target as Element;
     if (el.tagName === 'A') {

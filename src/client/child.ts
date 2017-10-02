@@ -44,7 +44,7 @@ export default function bootChild(w: TransmogrifierWindow, p: TransmogrifierPort
   const {
     routeTo,
     updateUrl
-  } = bootApp(w, isParentPath, onRoute, onPop, log);
+  } = bootApp(w, onRoute, onPop, log);
 
   w.transmogrify = function(path: string, previousPath: string) {
     console.log('child replace', previousPath);

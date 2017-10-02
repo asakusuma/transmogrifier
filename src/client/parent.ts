@@ -46,7 +46,7 @@ export default function bootParent(w: TransmogrifierWindow, p: TransmogrifierPor
   }
   const {
     routeTo
-  } = bootApp(w, isChildPath, onRoute, onPop, log);
+  } = bootApp(w, onRoute, onPop, log);
 
   w.transmogrify = function(path?: string) {
     if (path) {

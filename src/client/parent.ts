@@ -58,7 +58,6 @@ export default function bootParent(w: TransmogrifierWindow, p: TransmogrifierPor
       }, 100);
     }
   }
-  w.updateUrl = replaceState;
 
   w.updateChildUrl = function(path: string) {
     p.style.display = 'block';

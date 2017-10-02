@@ -1,4 +1,5 @@
 import { TransmogrifierConfig } from './config';
+import { TransmogrifierWindow } from './interfaces';
 
 const GLOBAL_CONFIG: TransmogrifierConfig = {
   adjunct: {
@@ -8,6 +9,24 @@ const GLOBAL_CONFIG: TransmogrifierConfig = {
 };
 
 export type RouteName = string;
+
+export function safeTransmogrify(target: TransmogrifierWindow, path: string, previousPath: string): Promise<void> {
+  const exec = () => {
+    target.transmogrify(path, previousPath);
+  }
+  
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      reject('Timeout');
+    }, 20000);
+    target.addEventListener('load', () => {
+      resolve();
+    });
+    if (target.transmogrify) {
+      resolve();
+    }
+  }).then(exec);
+}
 
 export function hrefToName(href: string): RouteName {
   if (href === '/') {

@@ -8,6 +8,7 @@
         "noImplicitThis": true,
         "noUnusedLocals": true,
         "moduleResolution": "node",
+        "target": "es2015",
         "outFile": "../dist/client/parent.js"
     },
     "files": [

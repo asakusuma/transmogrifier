@@ -3,7 +3,8 @@ import {
   TransmogrifierPortal
 } from '../shared/interfaces';
 import { 
-  generateIsExternalPath
+  generateIsExternalPath,
+  safeTransmogrify
 } from './../shared/shared';
 
 import log from './log';
@@ -11,9 +12,13 @@ import log from './log';
 import bootApp from './app';
 
 function routeToParent(w: TransmogrifierWindow, path?: string) {
-  const p = w.frameElement as HTMLFrameElement;
-  p.style.display = 'none';
   w.parent.transmogrify(path, window.location.pathname);
+  safeTransmogrify(w.parent, path, window.location.pathname) .then(() => {
+    const p = w.frameElement as HTMLFrameElement;
+    p.style.display = 'none';
+  }).then(null, function handleFailedTransmogrify(reason) {
+    console.error(reason);
+  });
 }
 
 

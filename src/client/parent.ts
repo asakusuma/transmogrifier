@@ -7,7 +7,8 @@ import {
   default as bootApp
 } from './app';
 import { 
-  generateIsExternalPath
+  generateIsExternalPath,
+  safeTransmogrify
 } from './../shared/shared';
 
 import log from './log';
@@ -15,9 +16,12 @@ import log from './log';
 export default function bootParent(w: TransmogrifierWindow, p: TransmogrifierPortal, isAdjunct: boolean) {
   let isActive = true;
   function routeToChild(p: TransmogrifierPortal, path: string) {
-    isActive = false;
-    p.contentWindow.transmogrify(path, window.location.pathname);
-    p.style.display = 'block';
+    safeTransmogrify(p.contentWindow, path, window.location.pathname).then(() => {
+      isActive = false;
+      p.style.display = 'block';
+    }).then(null, function handleFailedTransmogrify(reason) {
+      console.error(reason);
+    });;
   }
 
   //console.log('Parent is adjunct', isAdjunct);

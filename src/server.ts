@@ -66,8 +66,12 @@ function pageHandler(name: string, isAdj: boolean = false) {
     const appJs = childAppName ? 'parent.js' : 'child.js';
     const moduleName = childAppName ? 'client/parent' : 'client/child';
 
-    res.set('Content-Type', 'text/html');
-    res.send(renderPage(name, color, isAdjunctString, appJs, moduleName, childAppName));
+    const wait = childAppName ? 0: 2000;
+
+    setTimeout(() => {
+      res.set('Content-Type', 'text/html');
+      res.send(renderPage(name, color, isAdjunctString, appJs, moduleName, childAppName));
+    }, wait);
   }
 }
 
@@ -99,7 +103,7 @@ app.get('/parent.js', function(req, res) {
   sendAppJs(res, 'parent');
 });
 app.get('/child.js', function(req, res) {
-  sendAppJs(res, 'child', 10);
+  sendAppJs(res, 'child', 2000);
 });
 
 type AppName = 'adjunct' | 'incumbent';

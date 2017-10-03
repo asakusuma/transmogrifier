@@ -10,7 +10,7 @@ const GLOBAL_CONFIG: TransmogrifierConfig = {
 
 export type RouteName = string;
 
-export function safeTransmogrify(target: TransmogrifierWindow, path: string, previousPath: string): Promise<void> {
+export function safeTransmogrify(target: TransmogrifierWindow, path: string, previousPath: string, showLoading?: Function): Promise<void> {
   const exec = () => {
     target.transmogrify(path, previousPath);
   }
@@ -24,6 +24,8 @@ export function safeTransmogrify(target: TransmogrifierWindow, path: string, pre
     });
     if (target.transmogrify) {
       resolve();
+    } else if(showLoading) {
+      showLoading();
     }
   }).then(exec);
 }

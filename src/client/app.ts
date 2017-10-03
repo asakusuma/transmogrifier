@@ -31,18 +31,24 @@ const boot: AppBinder = function bootExampleApp(w: TransmogrifierWindow, onRoute
     appEl.textContent = hrefToName(href);
   }
 
+  function showLoading() {
+    const appEl = document.getElementById('app');
+    appEl.innerHTML = '<img src="https://cdnjs.cloudflare.com/ajax/libs/galleriffic/2.0.1/css/loader.gif" />';
+  }
+
   const app = {
     routeTo,
-    updateUrl
+    updateUrl,
+    showLoading
   };
 
   function internalPop(path: string, state: StateInterface) {
     routeTo(path);
-    onPop(path, state);
+    onPop(path, state, showLoading);
   }
 
   function internalNavigate(path: string) {
-    if (!onRoute(path)) {
+    if (!onRoute(path, showLoading)) {
       updateUrl(path);
       routeTo(path);
     }

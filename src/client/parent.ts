@@ -15,8 +15,10 @@ import log from './log';
 
 export default function bootParent(w: ParentWindow, p: TransmogrifierPortal, isAdjunct: boolean) {
   let isActive = true;
-  function routeToChild(p: TransmogrifierPortal, path: string) {
-    safeTransmogrify(p.contentWindow, path, window.location.pathname).then(() => {
+  function routeToChild(p: TransmogrifierPortal, path: string, showLoading: Function) {
+    safeTransmogrify(p.contentWindow, path, window.location.pathname, () => {
+      showLoading();
+    }).then(() => {
       isActive = false;
       p.style.display = 'block';
     }).then(null, function handleFailedTransmogrify(reason) {
@@ -27,10 +29,10 @@ export default function bootParent(w: ParentWindow, p: TransmogrifierPortal, isA
   //console.log('Parent is adjunct', isAdjunct);
   const isChildPath = generateIsExternalPath(isAdjunct);
 
-  function onRoute(path: string) {
+  function onRoute(path: string, showLoading: Function) {
     if (isChildPath(path)) {
       //console.log('Should route to child', path);
-      routeToChild(p, path);
+      routeToChild(p, path, showLoading);
       return true;
     } else {
       //console.log('from child', path);
@@ -38,10 +40,10 @@ export default function bootParent(w: ParentWindow, p: TransmogrifierPortal, isA
     }
   }
 
-  function onPop(path: string) {
+  function onPop(path: string, state: any, showLoading: Function) {
     isActive = true;
     if (isChildPath(path)) {
-      routeToChild(p, path);
+      routeToChild(p, path, showLoading);
     }
   }
   const {
